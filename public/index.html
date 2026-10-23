@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HUNT THE HIDDEN LOCATION — OSINT Investigation Lab</title>
+<meta name="theme-color" content="#050a07">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23050a07'/%3E%3Cpath d='M16 5a8 8 0 0 0-8 8c0 6 8 14 8 14s8-8 8-14a8 8 0 0 0-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z' fill='%2300ff7f'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css?v=final-download-2">
+</head>
+<body oncontextmenu="return false;">
+<div class="grid-bg" aria-hidden="true"></div>
+<header class="topbar">
+  <div class="logo">FIELD<span>//</span>OSINT</div>
+  <div class="topbar-right">
+    <span class="status"><i class="dot"></i>SYSTEM ONLINE</span>
+    <span class="mission-id">MISSION 001</span>
+    <button id="logoutBtn" class="btn btn-ghost btn-sm" hidden>LOG OUT</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1 class="glitch">HUNT THE HIDDEN LOCATION</h1>
+    <p class="sub">Open-Source Intelligence Investigation Lab</p>
+    <p class="tagline">“Six OSINT fundamentals. Four location clues. One final flag. Verify every clue.”</p>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="loginView" class="panel login" hidden>
+    <h2 class="panel-title">INVESTIGATOR AUTHENTICATION</h2>
+    <form id="loginForm" autocomplete="off" novalidate>
+      <label for="username">Enter your investigator username.</label>
+      <input id="username" name="username" type="text" maxlength="24" minlength="3" placeholder="e.g. cyber_fox" spellcheck="false" autocapitalize="off" required>
+      <p class="hint-line">3–24 characters · letters, numbers, _ and -</p>
+      <div id="codeRow" hidden>
+        <label for="code">Resume code (issued when you first registered)</label>
+        <input id="code" name="code" type="text" maxlength="12" placeholder="XXXX-XXXX" spellcheck="false" autocapitalize="characters">
+      </div>
+      <button class="btn" type="submit" id="loginBtn">INITIALIZE MISSION</button>
+      <p id="loginMsg" class="msg" role="alert"></p>
+    </form>
+    <p class="fineprint">New username? You'll receive a one-time resume code. Keep it — it's the only way to resume on another browser or after logging out. Do not enter real personal information.</p>
+  </section>
+
+  <!-- DASHBOARD -->
+  <div id="mainView" hidden>
+    <section class="dash" aria-label="Investigation dashboard">
+      <div class="stat"><span class="k">INVESTIGATOR</span><span class="v" id="dUser">—</span></div>
+      <div class="stat"><span class="k">QUESTIONS SOLVED</span><span class="v"><b id="dSolved">0</b>/10</span></div>
+      <div class="stat"><span class="k">TOTAL POINTS</span><span class="v"><b id="dPoints">0</b> <small>/ 1150</small></span></div>
+      <div class="stat"><span class="k">MISSION STATUS</span><span class="v" id="dStatus">—</span></div>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress">
+        <div class="bar" id="bar"></div><span id="pct">0% COMPLETE</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="leaderboard-title" class="leaderboard-section">
+      <div class="leaderboard-heading">
+        <h2 class="section-title" id="leaderboard-title"><em>00 /</em> LIVE LEADERBOARD</h2>
+        <button id="leaderboardRefresh" class="btn btn-ghost btn-sm" type="button">↻ REFRESH</button>
+      </div>
+      <p class="leaderboard-note">See how every investigator is progressing. Scores update automatically.</p>
+      <div class="table-wrap">
+        <table class="leaderboard-table">
+          <thead><tr><th>RANK</th><th>INVESTIGATOR</th><th>SOLVED</th><th>POINTS</th><th>PROGRESS</th><th>STATUS</th></tr></thead>
+          <tbody id="leaderboardRows"><tr><td colspan="6">Loading leaderboard…</td></tr></tbody>
+        </table>
+      </div>
+      <p id="leaderboardUpdated" class="leaderboard-updated">Waiting for leaderboard data…</p>
+    </section>
+
+    <section id="complete" class="complete" hidden>
+      <div class="complete-inner">
+        <h2>MISSION COMPLETE</h2>
+        <p>All checkpoints verified. You have successfully completed the investigation.</p>
+        <code id="flagText"></code>
+        <button id="copyFlag" class="btn">COPY FLAG</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="evh">
+      <h2 class="section-title" id="evh"><em>01 /</em> EVIDENCE BOARD</h2>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section aria-labelledby="cth">
+      <h2 class="section-title" id="cth"><em>02 /</em> CHALLENGE TERMINAL</h2>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section aria-labelledby="toolh">
+      <h2 class="section-title" id="toolh"><em>03 /</em> OSINT TOOLKIT</h2>
+      <div class="panel tools">
+        <ul>
+          <li><b>Google Lens</b> — visual matching and reverse image investigation.</li>
+          <li><b>Google Maps</b> — geographic context and landmark comparison.</li>
+          <li><b>Google Street View</b> — street-level visual verification where available.</li>
+          <li><b>OpenStreetMap</b> — roads, place names, and map features.</li>
+          <li><b>Google Search</b> — searching distinctive sign text and landmarks.</li>
+          <li><b>EXIF metadata viewers</b> — inspecting metadata when original image files contain it.</li>
+        </ul>
+        <p><b>Verify through independent sources.</b> A single match is a lead, not proof. Confirm a finding by checking that at least two unrelated sources agree — for example, a sign's wording in a web search, the same junction in Street View, and the road name on OpenStreetMap. Screenshots and re-shared images often have stripped or missing metadata, so EXIF data may be absent and, when present, can be edited; never treat it as proof of location on its own.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="foot">FIELD//OSINT · Educational CTF · Mission 001</footer>
+
+<div id="lightbox" class="lightbox" hidden><button class="btn btn-ghost btn-sm" id="lbClose">CLOSE ✕</button><img alt=""><p></p></div>
+<div id="codeModal" class="lightbox" hidden>
+  <div class="panel modal">
+    <h2 class="panel-title">SAVE YOUR RESUME CODE</h2>
+    <p>This code is shown <b>once</b>. You need it to resume this investigation after logging out or on another device.</p>
+    <code id="codeShow"></code>
+    <button class="btn" id="codeCopy">COPY CODE</button>
+    <button class="btn btn-ghost" id="codeOk">I'VE SAVED IT — CONTINUE</button>
+  </div>
+</div>
+<script src="/app.js?v=final-download-2"></script>
+</body>
+</html>
